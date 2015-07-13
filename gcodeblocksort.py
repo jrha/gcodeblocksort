@@ -62,7 +62,7 @@ length = 0.0
 x, y = 0, 0
 
 while 1:
-    best = 1000000000000.0
+    best = float('inf')
     for candidate in nodes:
         if candidate not in path:
             (i, j) = nodes[candidate]
