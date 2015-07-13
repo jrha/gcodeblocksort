@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 
-import argparse, re
+import argparse, re, logging
 from uuid import uuid4
 from math import pow, sqrt
 
@@ -8,7 +8,13 @@ RE_G0 = re.compile(r'G00 X(?P<x>\d+\.\d+) Y(?P<y>\d+\.\d+)')
 
 parser = argparse.ArgumentParser(description='gcodeblocksort')
 parser.add_argument('input', metavar='FILE',)
+parser.add_argument('--debug', action='store_true')
 args = parser.parse_args()
+
+logger = logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s', name="gcodeblocksort")
+logger = logging.getLogger("ssp")
+if args.debug:
+    logger.setLevel(logging.DEBUG)
 
 nodes = {}
 blocks = {}
@@ -62,17 +68,20 @@ length = 0.0
 x, y = 0, 0
 
 while 1:
+    logger.debug('Finding next path step')
     best = float('inf')
     for candidate in nodes:
+        logger.debug('  Examining candidate %s' % candidate)
         if candidate not in path:
+            logger.debug('    Candidate is not already in path')
             (i, j) = nodes[candidate]
             distance = abs(sqrt(pow(abs(i - x), 2) + pow(abs(j - y), 2)))
-            #print '%s is %f away' % (candidate, distance)
+            logger.debug('    %s is %f away' % (candidate, distance))
             if distance < best:
-                #print '%s is better than %f' % (candidate, best)
+                logger.debug('    New best! (distance %f is better than %f)' % (distance, best))
                 winner = candidate
                 best = distance
-    #print '%s won' % winner
+    logger.debug('    %s won' % winner)
     path.append(winner)
     if len(nodes) == len(path):
         break
