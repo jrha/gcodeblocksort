@@ -94,7 +94,7 @@ path = []
 length = 0.0
 x, y = 0, 0
 
-while 1:
+while len(path) < len(nodes):
     logger.debug('Finding next path step')
     best = float('inf')
     for candidate in nodes:
@@ -111,8 +111,6 @@ while 1:
     logger.debug('    %s won' % winner)
     path.append(winner)
     (x, y) = nodes[winner]
-    if len(nodes) == len(path):
-        break
 
 logger.debug('-------- Printing Header --------')
 for l in sections['header']:
